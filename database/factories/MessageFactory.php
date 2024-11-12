@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -17,7 +18,9 @@ class MessageFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'conversation_id' => $this->faker->numberBetween(1, 100),
+            'sender_id' => $this->faker->numberBetween(1, 100),
+            'message' => $this->faker->text(50),
         ];
     }
 }

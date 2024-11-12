@@ -3,62 +3,66 @@
 namespace App\Http\Controllers;
 
 use App\Models\Message;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
-    public function index()
+    public function index(): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
     {
-        //
+        $users = User::query()->where('id', '!=', auth()->id())->get();
+        return view('message', compact('users'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create()
     {
         //
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+
+        $validated = $request->validate([
+            'receiver_id' => 'required|exists:users,id',
+            'message' => 'required|string|max:1000'
+        ]);
+        Message::query()->create([
+            'sender_id' => auth()->id(),
+            'receiver_id' => $validated['receiver_id'],
+            'message' => $validated['message'],
+        ]);
+
+        return redirect()->route('messages-show', $request['receiver_id']);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Message $message)
+    public function show(string $id): \Illuminate\Contracts\View\View|\Illuminate\Contracts\View\Factory|\Illuminate\Foundation\Application
+    {
+        $users = User::query()->where('id', '!=', auth()->id())->get();
+        $next_user = User::query()->findOrFail($id);
+
+        $messages = Message::query()->where(function ($query) use ($id){
+           $query->where('sender_id', auth()->id())->where('receiver_id', $id);
+        })->orWhere(function ($query) use ($id){
+            $query->where('sender_id', $id)->where('receiver_id', auth()->id());
+        })->orderBy('created_at', 'asc')->get();
+
+//        dd($user);
+
+        return view('message', ['users' => $users, 'next_user' => $next_user, 'messages' => $messages]);
+    }
+
+    public function edit(string $id)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Message $message)
+
+    public function update(Request $request, string $id)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, Message $message)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Message $message)
+    public function destroy(string $id)
     {
         //
     }
