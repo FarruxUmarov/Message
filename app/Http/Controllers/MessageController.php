@@ -46,8 +46,6 @@ class MessageController extends Controller
             $query->where('sender_id', $id)->where('receiver_id', auth()->id());
         })->orderBy('created_at', 'asc')->get();
 
-//        dd($user);
-
         return view('message', ['users' => $users, 'next_user' => $next_user, 'messages' => $messages]);
     }
 
