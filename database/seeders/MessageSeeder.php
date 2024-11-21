@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\Message;
+use App\Models\Chat;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,6 +13,6 @@ class MessageSeeder extends Seeder
      */
     public function run(): void
     {
-        Message::factory()->count(25)->create();
+        Chat::factory()->count(25)->create();
     }
 }

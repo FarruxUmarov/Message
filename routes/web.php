@@ -1,7 +1,10 @@
 <?php
 
-use App\Http\Controllers\MessageController;
+use App\Http\Controllers\ChatController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProfileController;
+use App\Models\Message;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -19,9 +22,20 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('auth')->group(function () {
-Route::get('/messages', [MessageController::class, 'index'])->name('messages-index');
-Route::get('/messages/{id}', [MessageController::class, 'show'])->name('messages-show');
-Route::post('/messages', [MessageController::class, 'store'])->name('messages-store');
+Route::get('/chats', [ChatController::class, 'index'])->name('chats-index');
+Route::get('/chats/{id}', [ChatController::class, 'show'])->name('chats-show');
+Route::post('/chats', [ChatController::class, 'store'])->name('chats-store');
 });
 
-require __DIR__.'/auth.php';
+//require __DIR__.'/auth.php';
+
+Auth::routes();
+
+Route::get('/home', [HomeController::class, 'index'])
+    ->name('home');
+Route::get('/messages', [HomeController::class, 'messages'])
+    ->name('messages');
+Route::post('/message', [HomeController::class, 'message'])
+    ->name('message');
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

@@ -41,4 +41,19 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function message(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Message::class);
+    }
+
+    public function senderChats(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Chat::class);
+    }
+
+    public function receiverChats(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Chat::class);
+    }
 }

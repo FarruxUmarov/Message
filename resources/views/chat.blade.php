@@ -179,10 +179,17 @@
     <div class="user-list">
         <header>
             <span>Chats</span>
+{{--            <a href="{{ route('chats-show', $user_account->id) }}"--}}
+{{--               class="user-item @if(isset($user_chat) && $user_chat->id == $user_account->id) active @endif"--}}
+{{--               style="text-align:center; font-weight: bold;">--}}
+            @if(isset($user_account))
+                {{$user_account->name}}
+            @endif
+{{--            </a>--}}
         </header>
         <ul>
             @foreach($users as $user)
-                <a href="{{ route('messages-show',$user->id) }}"
+                <a href="{{ route('chats-show',$user->id) }}"
                    class="user-item @if(isset($next_user) && $next_user->id == $user->id) active @endif"
                    style="text-align:center; font-weight: bold;">{{$user->name}}</a>
             @endforeach
@@ -193,11 +200,11 @@
     <div class="chat-area">
         <div class="chat-header">Chat with @if(isset($next_user)) {{ $next_user->name }} @endif</div>
 
-        <div class="messages" id="messages">
-            @if(isset($messages))
-                @foreach($messages as $message)
-                    <div class="message {{ $message->sender_id == auth()->id() ? 'user' : 'bot' }}">
-                        <div class="text">{{ $message->message }}</div>
+        <div class="messages" id="chats">
+            @if(isset($chats))
+                @foreach($chats as $chat)
+                    <div class="message {{ $chat->sender_id == auth()->id() ? 'user' : 'bot' }}">
+                        <div class="text">{{ $chat->chat }}</div>
                     </div>
                 @endforeach
             @else
@@ -206,10 +213,10 @@
         </div>
 
         @if(isset($next_user))
-            <form action="{{ route('messages-store') }}" method="POST" class="input-area">
+            <form action="{{ route('chats-store') }}" method="POST" class="input-area">
                 @csrf
                 <input type="hidden" name="receiver_id" value="{{ $next_user->id }}">
-                <input type="text" name="message" placeholder="Write a message..." required>
+                <input type="text" name="chats" placeholder="Write a message..." required>
                 <button type="submit">Send</button>
             </form>
         @endif

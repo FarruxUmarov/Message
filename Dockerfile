@@ -16,7 +16,10 @@ RUN apt-get update && apt-get install -y \
     unzip\
     && docker-php-ext-configure gd --with-freetype --with-jpeg \
     && docker-php-ext-install gd pdo pdo_pgsql \
-    && docker-php-ext-install zip
+    && docker-php-ext-install zip \
+    && docker-php-ext-configure pcntl --enable-pcntl \
+    && docker-php-ext-install pcntl
+
 
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
