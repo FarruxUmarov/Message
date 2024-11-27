@@ -11,11 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('chats', function (Blueprint $table) {
+        Schema::create('rooms', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('sender_id')->unsigned();
-            $table->bigInteger('receiver_id')->unsigned();
-            $table->string('chat');
+            $table->enum('type', ['private', 'group']);
             $table->timestamps();
         });
     }
@@ -25,6 +23,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('chats');
+        Schema::dropIfExists('rooms');
     }
 };

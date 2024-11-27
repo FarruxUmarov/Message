@@ -37,10 +37,14 @@ class HomeController extends Controller
 
     public function message(Request $request): JsonResponse
     {
+        // 1. store
         $message = Message::create([
             'user_id' => auth()->id(),
             'text' => $request->get('text'),
+            'room_id' => 1,
         ]);
+
+        // 2. Queue - Q - Kyu
         SendMessage::dispatch($message);
 
         return response()->json([

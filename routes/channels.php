@@ -2,12 +2,9 @@
 
 use Illuminate\Support\Facades\Broadcast;
 
-Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
-    return (int) $user->id === (int) $id;
+//Broadcast::channel('user_{userId}_to_{otherUserId}', function ($user, $userId, $otherUserId) {
+//    return $user && ((int)$user->id === (int)$userId || (int)$user->id === (int)$otherUserId);
+//});
+Broadcast::channel("room.{id}", function ($user, $id) {
+    return $user-rooms()->where("id", $id)->first()->id;
 });
-
-Broadcast::channel('channel_for_everyone', function ($user) {
-    return true;
-});
-
-

@@ -15,7 +15,9 @@
                         <app :is-auth="{{ json_encode(auth()->check()) }}"
                              :user="{{ auth()->check() ? auth()->user() : 'null' }}">>
                         </app>
-                        { ... Logout code .. }
+                        <form method="get" action="/logout">
+                            <button type="submit">Log out</button>
+                        </form>
                     </div>
                 @else
                     <a href="{{ route('login') }}"> Log in </a>

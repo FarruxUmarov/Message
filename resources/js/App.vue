@@ -1,11 +1,16 @@
 <script>
 import axios from 'axios';
+import {ref} from 'vue';
 
 export default {
+    props: {
+        user: null,
+    },
     data() {
         return {
-            messages: [],
+            messages: ref([]),
             newMessage: "",
+            rooms: []
         };
     },
     methods: {
@@ -13,9 +18,9 @@ export default {
             try {
                 await axios.post(`/message`, {
                     text,
-                });
+                })
                 // After posting, retrieve messages to include the new one
-                this.getMessages();
+                await this.getMessages();
             } catch (err) {
                 console.log(err.message);
             }
@@ -34,8 +39,6 @@ export default {
             if (this.newMessage.trim() !== "") {
                 this.postMessage(this.newMessage.trim());
                 this.newMessage = "";
-            } else {
-                return;
             }
         },
         scrollToBottom() {
@@ -45,25 +48,48 @@ export default {
                     messageList.scrollTop = messageList.scrollHeight;
                 }
             });
+        },
+        async getRooms() {
+            const response = await axios.get('http://localhost:9900/api/rooms');
+            this.rooms = response.data;
+        },
+        async getRoomMessages(id) {
+            const response = await axios.get('http://localhost:9900/api/rooms/' + id + '/messages');
+            this.messages = response.data;
         }
     },
     created() {
-        this.getMessages();
+        // this.getMessages();
 
-        window.Echo.private("channel_for_everyone")
+        // window.Echo.private("channel_for_everyone")
+        //     .listen('GotMessage', (e) => {
+        //         this.getMessages();
+        //     });
+
+        window.Echo.private("room.1")
             .listen('GotMessage', (e) => {
                 this.getMessages();
             });
+
+        this.getRooms()
     },
 };
 </script>
 
 <template>
     <div class="container">
+        <ul class="rooms-list">
+            <li v-for="room in rooms"
+                class="room">
+                <button @click="getRoomMessages(room.id)">
+                    {{ room.id }}
+                </button>
+            </li>
+        </ul>
         <div class="chat-box" id="messagelist">
             <div v-for="(message, index) in messages" :key="index" class="message">
-                <strong>{{ message.user.name }}:</strong> {{ message.text }}
-                <small class="text-muted float-right">{{ message.time }}</small>
+                <strong>{{ message.user_id }}:</strong> {{ message.text }}
+                <small class="text-muted float-right">{{ message.created_at }}</small>
             </div>
         </div>
         <div class="input-area">
