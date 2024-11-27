@@ -6,11 +6,13 @@ use Database\Factories\MessageFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Chat extends Model
+class Chats extends Model
 {
     /** @use HasFactory<MessageFactory> */
     use HasFactory;
 
+
+    protected $table = 'chats';
     public $fillable = [
         'sender_id',
         'receiver_id',
